@@ -2,7 +2,7 @@
 
 ## Overview
 
-This Python service connects to MS OneDrive to collect a document, reads the document, then sends the document to OpenAI to generate a summary.
+This Python service connects to MS OneDrive to collect a document, reads the document, then sends the document to OpenAI to generate a summary. All the code for this project is stored in the src/ folder.
 
 ## Retrieve LEFT-OFF.docx
 
@@ -26,4 +26,6 @@ TARGET_FILE_ID = ID_TARGET_FILE
 APPLICATION_ID=ID_APPLICATION
 CLIENT_SECRET=CLIENT_SECRET
 REFRESH_TOKEN=REFRESH_TOKEN
+URL_BASE_OPENAI=https://api.openai.com/v1
+KEY_OPENAI=SECRET_OPENAI
 ```
