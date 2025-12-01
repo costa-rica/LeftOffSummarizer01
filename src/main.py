@@ -10,6 +10,8 @@ This service:
 import os
 import sys
 import logging
+import argparse
+from datetime import datetime
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -29,14 +31,73 @@ def setup_logging():
     )
 
 
+def is_within_allowed_window():
+    """
+    Check if current time is within the allowed execution window.
+
+    Allowed window: Sunday 10:55 PM - 11:05 PM (local system time)
+
+    Returns:
+        bool: True if within allowed window, False otherwise
+    """
+    now = datetime.now()
+
+    # Check if it's Sunday (weekday 6)
+    if now.weekday() != 6:
+        return False
+
+    # Check if time is between 22:55 (10:55 PM) and 23:05 (11:05 PM)
+    current_time = now.time()
+    start_time = datetime.strptime("22:55", "%H:%M").time()
+    end_time = datetime.strptime("23:05", "%H:%M").time()
+
+    return start_time <= current_time <= end_time
+
+
+def parse_arguments():
+    """
+    Parse command-line arguments.
+
+    Returns:
+        argparse.Namespace: Parsed arguments
+    """
+    parser = argparse.ArgumentParser(
+        description='LeftOffSummarizer - Summarize recent LEFT-OFF activities'
+    )
+    parser.add_argument(
+        '--run-anyway',
+        action='store_true',
+        help='Run the service regardless of the scheduled time window'
+    )
+    return parser.parse_args()
+
+
 def main():
     """Main application logic."""
     setup_logging()
     logger = logging.getLogger(__name__)
 
+    # Parse command-line arguments
+    args = parse_arguments()
+
+    # Check if we're within the allowed time window
+    if not args.run_anyway and not is_within_allowed_window():
+        now = datetime.now()
+        logger.warning("=" * 70)
+        logger.warning("EXECUTION BLOCKED")
+        logger.warning("=" * 70)
+        logger.warning(f"Current time: {now.strftime('%A, %Y-%m-%d %H:%M:%S')}")
+        logger.warning("Service can only run on Sunday between 10:55 PM and 11:05 PM")
+        logger.warning("Use --run-anyway flag to bypass this restriction")
+        logger.warning("=" * 70)
+        return 2  # Exit code 2 for "outside allowed window"
+
     logger.info("=" * 70)
     logger.info("LEFT-OFF SUMMARIZER")
     logger.info("=" * 70)
+
+    if args.run_anyway:
+        logger.info("Running with --run-anyway flag (bypassing time window check)")
 
     # Load environment variables
     load_dotenv()

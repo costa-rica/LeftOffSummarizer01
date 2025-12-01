@@ -58,6 +58,16 @@ The service will:
 2. Extract activities from the last 7 days
 3. Generate a summary using OpenAI
 
+### Time Window Restriction
+
+For safety, the service only runs during its scheduled window: **Sunday 10:55 PM - 11:05 PM** (local system time). This prevents accidental executions.
+
+To bypass this restriction for manual runs or testing:
+
+```bash
+python src/main.py --run-anyway
+```
+
 ## Output Files
 
 All files are saved to the directory specified in `PATH_LEFT_OFF_SUMMARIZER`:
