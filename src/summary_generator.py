@@ -3,6 +3,7 @@ Summary generator using OpenAI API.
 """
 
 import logging
+from datetime import datetime
 from openai import OpenAI
 
 
@@ -65,9 +66,13 @@ class SummaryGenerator:
             summary = response.choices[0].message.content
             logger.info(f"Summary generated ({len(summary)} characters)")
 
+            # Prefix summary with today's date
+            today = datetime.now().strftime('%Y-%m-%d')
+            summary_with_date = f"{today}\n\n{summary}"
+
             # Save summary to file
             with open(output_path, 'w', encoding='utf-8') as f:
-                f.write(summary)
+                f.write(summary_with_date)
 
             logger.info(f"Summary saved to: {output_path}")
             return True
